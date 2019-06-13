@@ -1,0 +1,15 @@
+{
+	"httpPort": 7749,
+	"controller": "common.js",
+	"routes": [{
+		"url": "/",
+		"view": "index.htm"
+	}, {
+		"url": "/send-email/",
+		"get": false,
+		"post": true,
+		"view": "json.htm",
+		"controller": "sendemail.js",
+		"mimeType": "application/json"
+	}]
+}
