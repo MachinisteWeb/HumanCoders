@@ -11,5 +11,8 @@
 		"view": "json.htm",
 		"controller": "sendemail.js",
 		"mimeType": "application/json"
-	}]
+	}],
+	"_smtpLoginAuth": "",
+	"_smtpPasswordAuth": "",
+	"_smtpProviderAuth": ""
 }

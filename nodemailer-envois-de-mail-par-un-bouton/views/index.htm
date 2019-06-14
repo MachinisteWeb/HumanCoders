@@ -22,6 +22,13 @@
 <body>
 	<section class="send-email">
 		<div class="send-email__init">
+			<p>De : <input class="send-email__from" type="text" name="from"></p>
+			<p>À : <input class="send-email__to" type="text" name="to"></p>
+			<p>Sujet: <input class="send-email__subject" type="text" name="subject"></p>
+			<p>
+				Contenu:<br>
+				<textarea class="send-email__content" name="content"></textarea>
+			</p>
 			<button class="send-email__init-button">Envoyer un email</button>
 		</div>
 		<div class="send-email__processing">
@@ -35,36 +42,44 @@
 		</div>
 	</section>
 	<script type="text/javascript">
-		var button = document.getElementsByClassName('send-email__init-button')[0],
-			sendEmail = document.getElementsByClassName('send-email')[0];
+		var debug = true,
+			button = document.getElementsByClassName('send-email__init-button')[0],
+			sendEmail = document.getElementsByClassName('send-email')[0],
+			sendEmailFrom = document.getElementsByClassName('send-email__from')[0],
+			sendEmailTo = document.getElementsByClassName('send-email__to')[0],
+			sendEmailSubject = document.getElementsByClassName('send-email__subject')[0],
+			sendEmailContent = document.getElementsByClassName('send-email__content')[0];
 
 		button.addEventListener('click', function () {
+			var mailOptions = {
+				to: sendEmailFrom.value,
+				from: sendEmailTo.value,
+				subject: sendEmailSubject.value,
+				content: sendEmailContent.value
+			};
+
+			debug && console.log('debug', mailOptions);
 
 			sendEmail.classList.add('is-processing');
+
 			fetch('http://localhost:7749/send-email/', {
 			    method: 'POST',
 			    headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
-			    body: JSON.stringify({
-					to: 'dest@adress.here',
-					from: 'src@adress.here',
-					subject: 'Ceci est un test!',
-					content: 'Ceci est le contenu du test!'
-			    })
+			    body: JSON.stringify(mailOptions)
 			})
 			.then(function(response) {
 				response.text().then(function (data) {
 					sendEmail.classList.remove('is-processing');
-					if (data) {
+					if (data.success) {
 						sendEmail.classList.add('is-success');
 					} else {
 						sendEmail.classList.add('is-failure');
 					}
 				});
 			});
-
 		});
 	</script>
 </body>

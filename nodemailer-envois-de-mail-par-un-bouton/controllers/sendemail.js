@@ -1,33 +1,31 @@
 /* jslint node: true */
 exports.changeVariations = function (next, locals, request, response) {
-	var NA = this,
+	var debug = true,
+		NA = this,
 		nodemailer = NA.modules.nodemailer;
-		/* transporter = nodemailer.createTransport('<smtps://>')*/;
+		transporter = nodemailer.createTransport('smtps://' + NA.webconfig._smtpLoginAuth + ':' + NA.webconfig._smtpPasswordAuth + '@' + NA.webconfig._smtpProviderAuth),
+		mailOptions = {
+			from: request.body.from,
+			to: request.body.to,
+			subject: request.body.subject,
+			text: request.body.content
+		};
 
-	// Send mail with defined transport object.
-	/*transporter.sendMail('<mailOption>', function (error) {
+	debug && console.log('debug', mailOptions);
+
+	transporter.sendMail(mailOptions, function (error) {
 		if (error) {
 
 			// FAILLURE
-			locals.specific = { error: 'Unknown Error' };
+			response.statusCode = 503;
+			locals.specific = { success: false, error: error };
 		} else {
 
 			// SUCCESS
-			locals.specific = { success: 'OK' };
+			response.statusCode = 200;
+			locals.specific = { success: true };
 		}
 
 		next();
-	});*/
-
-	// This is a send email mockup
-	setTimeout(function () {
-		if (true) {
-			locals.specific = { success: 'OK' };
-		} else {
-			locals.specific = { error: 'Unknown Error' };
-		}
-
-		next();
-	}, 1000);
-
+	});
 };
