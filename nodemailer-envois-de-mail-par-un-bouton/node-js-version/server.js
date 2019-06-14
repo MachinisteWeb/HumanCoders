@@ -29,7 +29,7 @@ httpServer = http.createServer(function (request, response) {
 				"Content-Type": "text/html; charset=utf-8"
 			});
 
-			response.end(content || 'Error 404');
+			response.end(content);
 		});
 	}
 
