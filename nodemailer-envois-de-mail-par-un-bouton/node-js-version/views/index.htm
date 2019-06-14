@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Nodemailer envois de mail par un bouton</title>
+	<style type="text/css">
+		.send-email__processing,
+		.send-email__success,
+		.send-email__failure,
+		.send-email.is-processing .send-email__init,
+		.send-email.is-success .send-email__init,
+		.send-email.is-failure .send-email__init {
+			display: none;
+		}
+
+		.send-email.is-processing .send-email__processing,
+		.send-email.is-success .send-email__success,
+		.send-email.is-failure .send-email__failure {
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<section class="send-email">
+		<div class="send-email__init">
+			<p>De : <input class="send-email__from" type="text" name="from"></p>
+			<p>À : <input class="send-email__to" type="text" name="to"></p>
+			<p>Sujet: <input class="send-email__subject" type="text" name="subject"></p>
+			<p>
+				Contenu:<br>
+				<textarea class="send-email__content" name="content"></textarea>
+			</p>
+			<button class="send-email__init-button">Envoyer un email</button>
+		</div>
+		<div class="send-email__processing">
+			<p>Envoi en cours...</p>
+		</div>
+		<div class="send-email__success">
+			<p>Votre email a correctement été envoyé!</p>
+		</div>
+		<div class="send-email__failure">
+			<p>Votre email n'a pas été envoyé…</p>
+		</div>
+	</section>
+	<script type="text/javascript">
+		/* jslint browser: true */
+		var debug = true,
+			button = document.getElementsByClassName('send-email__init-button')[0],
+			sendEmail = document.getElementsByClassName('send-email')[0],
+			sendEmailFrom = document.getElementsByClassName('send-email__from')[0],
+			sendEmailTo = document.getElementsByClassName('send-email__to')[0],
+			sendEmailSubject = document.getElementsByClassName('send-email__subject')[0],
+			sendEmailContent = document.getElementsByClassName('send-email__content')[0];
+
+		button.addEventListener('click', function () {
+			var mailOptions = {
+				to: sendEmailFrom.value,
+				from: sendEmailTo.value,
+				subject: sendEmailSubject.value,
+				content: sendEmailContent.value
+			};
+
+			debug && console.log('debug', mailOptions);
+
+			sendEmail.classList.add('is-processing');
+
+			fetch('http://localhost:7749/send-email/', {
+			    method: 'POST',
+			    headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+			    body: JSON.stringify(mailOptions)
+			})
+			.then(function(response) {
+				response.text().then(function (data) {
+					sendEmail.classList.remove('is-processing');
+					if (data.success) {
+						sendEmail.classList.add('is-success');
+					} else {
+						sendEmail.classList.add('is-failure');
+					}
+				});
+			});
+		});
+	</script>
+</body>
+</html>
