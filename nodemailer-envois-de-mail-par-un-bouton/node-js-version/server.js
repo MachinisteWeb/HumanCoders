@@ -17,7 +17,7 @@ httpServer = http.createServer(function (request, response) {
 	},
 	view = router[request.url].view,
 	controller = router[request.url].controller,
-	statusCode = (router[request.url]) ? 200 : 404;
+	statusCode = (router[request.url].view) ? 200 : 404;
 
 	if (view) {	
 		fs.readFile('./views/' + view, "utf-8", function (err, content) {
@@ -29,7 +29,7 @@ httpServer = http.createServer(function (request, response) {
 				"Content-Type": "text/html; charset=utf-8"
 			});
 
-			response.end(content);
+			response.end(content || 'Error 404');
 		});
 	}
 
